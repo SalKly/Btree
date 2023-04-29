@@ -4,9 +4,7 @@
     flat
     tile
     height="80px"
-  >
-
-  </v-card>
+  />
 </template>
 
 <script>

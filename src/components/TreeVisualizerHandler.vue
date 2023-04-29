@@ -13,6 +13,11 @@
         :disabled="isAnimating"
         @myEvent="insertInputEvent"
       />
+      <SearchInput
+        :disabled="isAnimating"
+        @myEvent="SetSearchValue"
+      />
+
       <DeleteInput
         :disabled="isAnimating"
         :onlypop="onlypop"
@@ -64,6 +69,7 @@
 
 import Router from 'vue-router';
 import InsertInput from './shared/InsertInput.vue';
+import SearchInput from './shared/SearchInput.vue';
 import DeleteInput from './shared/DeleteInput.vue';
 import Visualizer from './shared/Visualizer.vue';
 import HistoryButtons from './shared/HistoryButtons.vue';
@@ -76,6 +82,7 @@ export default {
   name: 'TreeVisualizerHandler',
   components: {
     InsertInput,
+    SearchInput,
     DeleteInput,
     Visualizer,
     HistoryButtons,
@@ -87,6 +94,7 @@ export default {
       /** @type {Sequence[]} */
       sequencesList: [],
       insertionQueue: [],
+      searchValueData: '',
       currentSequenceNumber: 0,
       currentFrame: 0,
       onlypop: true,
@@ -139,12 +147,23 @@ export default {
       });
       this.dequeueInsert();
     },
+    SetSearchValue(event) {
+      this.searchValueData = event;
+      this.Search();
+    },
     dequeueInsert() {
       const newSequence = new Sequence();
       this.sequencesList.push(newSequence);
       this.currentSequenceNumber = this.sequencesList.length - 1;
       const sequence = this.tree.insert(this.insertionQueue[0]);
       this.insertionQueue.splice(0, 1);
+      this.addSequenceAsync(sequence);
+    },
+    Search() {
+      const newSequence = new Sequence();
+      this.sequencesList.push(newSequence);
+      this.currentSequenceNumber = this.sequencesList.length - 1;
+      const sequence = this.tree.searchValue(this.searchValueData);
       this.addSequenceAsync(sequence);
     },
     deleteInputEvent(event) {
@@ -176,6 +195,7 @@ export default {
           }
         }, i * 500);
       }
+      this.isAnimating = false;
     },
     changeCurrentFrame(event) {
       this.currentFrame += event;
