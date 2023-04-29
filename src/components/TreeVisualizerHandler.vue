@@ -121,7 +121,7 @@ export default {
     },
   },
   mounted() {
-    this.tree = new BTree(3);
+    this.tree = new BTree(2);
     this.onlypop = false;
     this.title = 'B Tree';
     this.tree.root = new BTreeNode(true);
