@@ -151,6 +151,7 @@ export default class BTree {
                 if (actual.leaf) {
                     // Value was not found
                     actual = null;
+                    alert("Value not found in the Tree");
                 } else {
                     let child = 0;
 
