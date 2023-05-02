@@ -24,6 +24,11 @@
         @myEvent="deleteInputEvent"
       />
     </div>
+
+    <h1 :class="{'hidden':Found}">
+      Value {{ searchValueData }} not found
+    </h1>
+
     <Visualizer
       :sequences="sequences"
       :current-sequence-number="currentSequenceNumber"
@@ -100,6 +105,8 @@ export default {
       onlypop: true,
       isAnimating: false,
       title: '',
+      Found: true,
+
     };
   },
   computed: {
@@ -140,6 +147,8 @@ export default {
       router.back();
     },
     insertInputEvent(event) {
+      this.Found = true;
+
       event.split(',').forEach((value) => {
         if (value) {
           this.insertionQueue.push(value);
@@ -163,14 +172,24 @@ export default {
       const newSequence = new Sequence();
       this.sequencesList.push(newSequence);
       this.currentSequenceNumber = this.sequencesList.length - 1;
-      const sequence = this.tree.searchValue(this.searchValueData);
+      const { sequence, node } = this.tree.searchValue(this.searchValueData);
+      if (!node) {
+        this.Found = false;
+      } else {
+        this.Found = true;
+      }
+      console.log(node);
+      console.log(this.notFound);
       this.addSequenceAsync(sequence);
     },
     deleteInputEvent(event) {
-      const newSequence = new Sequence();
-      this.sequencesList.push(newSequence);
-      this.currentSequenceNumber = this.sequencesList.length - 1;
-      this.addSequenceAsync(this.tree.delete(event));
+      if (event !== '') {
+        this.Found = true;
+        const newSequence = new Sequence();
+        this.sequencesList.push(newSequence);
+        this.currentSequenceNumber = this.sequencesList.length - 1;
+        this.addSequenceAsync(this.tree.delete(event));
+      }
     },
     replay() {
       const frames = [];
@@ -239,5 +258,14 @@ export default {
     width: 100%;
     height: 90vh;
     flex-direction: column;
+  }
+  .hidden{
+    display: none;
+  }
+  .show{
+    display: block;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 4px;
   }
 </style>

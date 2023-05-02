@@ -130,6 +130,9 @@ export default class BTree {
         while (!node && actual) {
             console.log('Current Actual Node:')
             console.log(actual.values)
+            actual.highlighted = actual.values;
+            sequence.addFrame(new Frame(this.toJSON(this.root)));
+
             // Check if the value is in the node
 
             if (actual.values.includes(parseInt(value))) {
@@ -151,7 +154,8 @@ export default class BTree {
                 if (actual.leaf) {
                     // Value was not found
                     actual = null;
-                    alert("Value not found in the Tree");
+
+
                 } else {
                     let child = 0;
 
@@ -172,7 +176,7 @@ export default class BTree {
                 }
             }
         }
-        return sequence;
+        return { sequence, node };
     }
 
     /**
